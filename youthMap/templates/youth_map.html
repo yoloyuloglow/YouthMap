@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAP</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=앱키입력"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <style>
+    .home {text-align: center;}
+    .home h1 a{text-decoration: none; color:#2dad78;}
+    .home h1 a:hover {color:#484d55;}
+    .custom-class {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .custom-div {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .custom-div:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .custom-info {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+    .close-btn {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png'); }
+    .close-btn:hover {cursor: pointer;}
+    .custom-img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .custom-body {position: relative;overflow: hidden;}
+    .custom-desc {position: relative;margin: 13px 0 0 90px;height: 75px; }
+    .custom-desc .custom-add {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .custom-desc .custom-phone {font-size: 12px;color: #888;margin-top: 2px;}
+    .custom-div .custom-img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .custom-div:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    /*.info .link {color: #5085BB;}*/
+  </style>
+  
+</head>
+
+<body>
+  <div class="home"><h1><a href="/">YOUTH MAP</a></h1></div>
+
+  <div id="map" style="width:100%; height:800px;"></div>
+  <script>
+    let mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+    mapOption = { 
+        center: new kakao.maps.LatLng(35.94551602222, 126.68513372355), // 지도의 중심좌표
+        level: 3 // 지도의 확대 레벨
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    let imageSrc = '../static/images/marker.png';
+    let imageSize = new kakao.maps.Size(45,45);
+    let markerimage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+    let isLoggedIn = false;
+    let isLiked;
+    let userId;
+    function LoginCheck(){
+          fetch('/nick',{method : 'POST'}).then(response => response.json())
+          .then(data => {
+            if(data.result == 'success'){       // 로그인이 되어 있는 지 먼저 체크..
+              userId = data.id;
+              isLoggedIn = true;
+            }else{
+              isLoggedIn = false;
+              //alert('로그인 안되어 있음')
+            }
+          }).catch(error => {
+          console.error('로그인 상태 확인 중 오류 : ', error);
+        });
+      }
+    LoginCheck()
+    function get_mapmarker(){
+    $.ajax({
+      type: "GET",
+      url: '/get_data',
+      data: {},
+      success: function (response) {
+        //console.log('Received data from server:', response);
+
+      let mapmarkers = response["fac_list"]	 
+      mapmarkers.forEach(function (mapmarkers) {
+        console.log('마카:', mapmarkers);
+        let latitude = mapmarkers.lat
+        let longitude = mapmarkers.git
+        console.log('마카 위경도:', latitude, longitude);
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+          position: new kakao.maps.LatLng(latitude, longitude),
+          map: map,
+          image : markerimage
+          });
+        
+        function updateLikeImage() {
+        if (isLiked == true) {
+            // 좋아요 상태면 꽉 찬 하트 이미지 설정
+            img.src = '../static/images/heartfull.png'; // 꽉 찬 하트 이미지 경로
+        } else {
+            // 좋아요 상태가 아니면 빈 하트 이미지 설정
+            img.src = '../static/images/heart.png'; // 빈 하트 이미지 경로
+        }
+        }
+        function isLikedCheck(){
+          if (isLoggedIn == false){
+            isLiked = false;
+          }else{
+            fetch('/is-like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: userId, facId: mapmarkers.idx }),  // 원래의 isliked 값을 넘겨줘서... 만약 있으면 true 없으면 false
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 서버에서 좋아요 상태 업데이트에 대한 응답을 받으면 적절한 조치를 취할 수 있음
+            if (data.result === 'success') {            // 바꾸는 데 성공하면~ success 아니면...  암것도 안해도 되지 않을까...? ㅋㅋㅋㅋㅋㅋ
+                // 좋아요 상태 업데이트 성공 시 로컬 상태도 업데이트
+                isLiked = true;
+                updateLikeImage()
+                // 토글 후 이미지 업데이트        // 이미지 다시 설정하고...
+            } else {
+                isLiked = false;
+                updateLikeImage()
+                //updateLikeImage()
+            }
+        })
+        .catch(error => {
+            console.error('일단 실패 ㅋ', error);
+        });
+          }
+        }
+
+        function checkLoginAndToggleLike(){  // 버튼을 눌렀을때만 동작 되는 것이다...
+          if(isLoggedIn == true){       // 로그인이 되어 있는 지 먼저 체크..
+            toggleLike(userId);   // 되어 있다면.. 넘긴다..!
+          }else{
+            alert('로그인이 필요합니다.');
+          }
+        }
+        function toggleLike(userId) {   // 만약 로그인이 되어있는데 버튼을 눌렀다면
+        // 여기에서 userId를 사용하여 좋아요 상태를 서버에 전송하고 업데이트하는 로직을 추가할 수 있습니다.
+        console.log(mapmarkers.id);
+        // 가상의 서버 요청 (서버에 실제로는 좋아요 상태를 업데이트하는 요청을 보내야 함)
+        fetch('/toggle-like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: userId, isLiked: !isLiked, facId: mapmarkers.idx }),  // 원래의 isliked 값을 넘겨줘서... 만약 있으면 true 없으면 false
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 서버에서 좋아요 상태 업데이트에 대한 응답을 받으면 적절한 조치를 취할 수 있음
+            if (data.result === 'success') {            // 바꾸는 데 성공하면~ success 아니면...  암것도 안해도 되지 않을까...? ㅋㅋㅋㅋㅋㅋ
+                // 좋아요 상태 업데이트 성공 시 로컬 상태도 업데이트
+                isLiked = !isLiked;              // 반대상태로 뒤집고..
+                // 토글 후 이미지 업데이트        // 이미지 다시 설정하고...
+                updateLikeImage();
+            } else {
+                // 좋아요 상태 업데이트 실패 시 적절한 처리
+                console.error('좋아요 상태 업데이트 실패:', data.msg);    // 설정 실퐤..
+            }
+        })
+        .catch(error => {
+            console.error('좋아요 상태 업데이트 중 오류:', error);
+        });
+    }
+        // content HTMLElement 생성
+        var content = document.createElement('div');
+        content.className = 'custom-class';
+
+        var con = document.createElement('div');
+        content.className = 'custom-div';
+        content.appendChild(con);
+        var info = document.createElement('div');
+        info.className = 'custom-info';
+        info.appendChild(document.createTextNode(mapmarkers.name));
+
+        con.appendChild(info);
+
+
+        var closeBtn = document.createElement('div');
+        closeBtn.className = 'close-btn';
+        //closeBtn.appendChild(document.createTextNode('닫기'));
+        info.appendChild(closeBtn);
+        // 닫기 이벤트 추가
+        
+        var body = document.createElement('div');
+        body.className = 'custom-body';
+        con.appendChild(body);
+
+        var img = document.createElement('img');
+        isLikedCheck()     
+        img.className = 'custom-img';
+        img.onclick = checkLoginAndToggleLike;
+        updateLikeImage()
+
+        var desc = document.createElement('div');
+        desc.className = 'custom-desc';
+
+        body.appendChild(img);
+        body.appendChild(desc);
+
+        var add = document.createElement('div');
+        add.appendChild(document.createTextNode(mapmarkers.address));
+        add.className = 'custom-add';
+        var phone = document.createElement('div');
+        phone.appendChild(document.createTextNode(mapmarkers.phone));
+        phone.className = 'custom-phone';
+
+        desc.appendChild(add);
+        desc.appendChild(phone);
+
+        closeBtn.onclick = function() {
+          overlay.setMap(null);
+        };
+
+
+        // customoverlay 생성, 이때 map을 선언하지 않으면 지도위에 올라가지 않습니다.
+        var overlay = new daum.maps.CustomOverlay({
+          position: new kakao.maps.LatLng(latitude, longitude),
+          content: content,
+          //map: map
+        });
+
+        // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+        kakao.maps.event.addListener(marker, 'click', function() {
+          overlay.setMap(map);
+          
+        });
+        
+      });
+      }
+    });
+  }
+  
+  document.addEventListener('DOMContentLoaded', function () {
+        get_mapmarker();
+    });
+
+    
+  </script>
+</body>
+</html> 
+

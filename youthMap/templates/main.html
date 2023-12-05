@@ -1,0 +1,276 @@
+<!DOCTYPE HTML>
+<!--
+	Escape Velocity by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>청소년 시설 지도</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+	</head>
+	<body class="homepage is-preload">
+		<div id="page-wrapper">
+			
+			<!-- Header -->
+				<section id="header" class="wrapper">
+
+					<!-- Logo -->
+						<div id="logo">
+							<h1><a href="/">YOUTH MAP</a></h1>
+							<p>주변의 청소년 시설은 무엇이 있는지 확인하세요!</p>
+						</div>
+
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li class="current"><a href="/">Home</a></li>
+								<li><a href="like">LIKE</a></li>
+								{% if session['logged_in'] %}
+								<li><a href="sign_out">SIGN OUT</a></li>
+								<!--<li id="user"><strong>{{ data }}</strong>님 안녕하세요</li>-->
+								{%else%}
+								<li><a href="sign_in">SIGN IN</a></li>
+								{% endif %}
+								<!--<li><a href="no-sidebar.html">No Sidebar</a></li>-->
+							</ul>
+						</nav>
+
+				</section>
+
+			<!-- Intro -->
+				<section id="intro" class="wrapper style1">
+					<!--<div class="title">The Introduction</div>-->
+					<div class="container">
+						<p class="style1">주변 지역에 위치한 다양한 청소년 혜택을 누려보세요</p>
+						<p class="style2">
+							전라북도 지역 청소년 시설 지도<br class="mobile-hide" />
+							<!--데이터 소스는 <a href="http://html5up.net" class="nobr">공공데이터 포털</a>-->
+						</p>
+						<p class="style3">해당 <strong> YOUTH MAP </strong>은 지도 api 중 <strong> KAKAO 맵 </strong> 기반이며 <strong> FLASK </strong>로 서버를 구현했습니다.
+						<br><a href="http://html5up.net/license">Creative Commons Attribution 3.0 license</a>를 따르는
+						html5up의 템플릿을 사용했습니다.</p>
+						<ul class="actions">
+							<li><a href="youth_map" class="button style3 large" style="color:#fff">지도 열기</a></li>
+						</ul>
+					</div>
+				</section>
+
+			<!-- Main -->
+				<section id="main" class="wrapper style2">
+					<div class="title">The Details</div>
+					<div class="container">
+
+						<!-- Image -->
+							<a href="#" class="image featured">
+								<img src="images/banner.jpg" alt="" />
+							</a>
+
+						<!-- Features -->
+							<section id="features">
+								<header class="style1">
+									<h2>YOUTH MAP의 지도 사용 가이드</h2>
+									<p>해당 지도는 카카오 맵 API를 기반으로 하였습니다</p>
+								</header>
+								<div class="feature-list">
+									<div class="row">
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon fa-comment">지도의 시작 위치</h3>
+												<p>군산대학교를 초기 지도 시작 위치로 설정하였습니다</p>
+											</section>
+										</div>
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon solid fa-sync">시설에 대한 마커 </h3>
+												<p>각 시설의 위치에 마커를 찍어, 해당 위치를 직관적으로 알 수 있게 하였습니다</p>
+											</section>
+										</div>
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon fa-image">마커 클릭 시 시설 정보 출력</h3>
+												<p>마커를 클릭하면 해당 시설에 대한 간략한 정보를 출력합니다 (기관명, 주소, 전화번호)</p>
+											</section>
+										</div>
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon solid fa-cog">자유로운 지도의 확대 및 축소</h3>
+												<p>정적지도가 아닌 동적 지도를 사용하여 지도의 확대 및 축소가 가능하게 하였습니다</p>
+											</section>
+										</div>
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon solid fa-wrench">시설 찜 하기</h3>
+												<p>가고 싶은 시설을 찜해서 개인별 찜목록을 만들 수 있습니다 </p>
+											</section>
+										</div>
+										<div class="col-6 col-12-medium">
+											<section>
+												<h3 class="icon solid fa-check">로그인 / 회원가입</h3>
+												<p>개인별 찜목록을 만들기 위한 로그인 / 회원가입 기능입니다. 로그인 상태일때만 찜을 누를 수 있고, 찜 목록 확인이 가능합니다</p>
+											</section>
+										</div>
+									</div>
+								</div>
+								<ul class="actions special">
+									<!--
+									<li><a href="#" class="button style1 large">Get Started</a></li>
+									<li><a href="#" class="button style2 large">More Info</a></li>
+									-->
+								</ul>
+							</section>
+
+					</div>
+				</section>
+
+			<!-- Highlights -->
+				<section id="highlights" class="wrapper style3">
+					<div class="title">사용 기술</div>
+					<div class="container">
+						<div class="row aln-center">
+							<div class="col-4 col-12-medium">
+								<section class="highlight">
+									<a href="#" class="image featured"><img style="background-color: #fff;" src="static/images/oracle.jpg" alt="" /></a>
+									<h3><a href="#">오라클 데이터베이스</a></h3>
+									<p>Oracle Database 21c 버전을 사용하였습니다. 파이썬 import oracledb를 통해 DB 연동을 진행하였습니다.</p>
+									<ul class="actions">
+										<li><a href="https://www.oracle.com/kr" class="button style1">Learn More</a></li>
+									</ul>
+								</section>
+							</div>
+							<div class="col-4 col-12-medium">
+								<section class="highlight">
+									<a href="#" class="image featured"><img style="background-color: #fff;" src="static/images/flask.jpg" alt="" /></a>
+									<h3><a href="">파이썬 플라스크</a></h3>
+									<p>서버 연동을 위해 플라스크 라이브러리를 사용하기로 했습니다. 파이썬 라이브러리이기에 서버 언어는 파이썬을 사용하였습니다.</p>
+									<ul class="actions">
+										<li><a href="https://flask-docs-kr.readthedocs.io/ko/latest/quickstart.html" class="button style1">Learn More</a></li>
+									</ul>
+								</section>
+							</div>
+							<div class="col-4 col-12-medium">
+								<section class="highlight">
+									<a href="#" class="image featured"><img style="background-color: #fff;" src="static/images/jquery.jpg" alt="" /></a>
+									<h3><a href="#">제이쿼리, 자바스크립트</a></h3>
+									<p>파이썬의 데이터를 받아오기 위해 JQuery의 ajax를 이용하였으며, 기타 기능 구현을 위해 자바스크립트를 사용하였습니다.</p>
+									<ul class="actions">
+										<li><a href="https://jquery.com/" class="button style1">Learn More</a></li>
+									</ul>
+								</section>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			<!-- Footer -->
+				<section id="footer" class="wrapper">
+					<div class="title">문의사항</div>
+					<div class="container">
+						<header class="style1">
+							<h2>혹시 서비스에 대해 궁금하신 점이 있으신가요?</h2>
+							<p>
+								만약 있으시거나, 오류가 발생하셨다면 하단에 기재된 연락처를 통해 문의해주시길 바랍니다.<br>
+								입력폼에 문의자 분의 성명, 이메일 주소, 내용을 적어서 전송하시면 제 이메일로 자동 전송됩니다.
+							</p>
+						</header>
+						<div class="row">
+							<div class="col-6 col-12-medium">
+
+								<!-- Contact Form -->
+									<section>
+										<form method="post" action="이메일 스크립트 주소" class="gform" id="gform">
+											<div class="row gtr-50">
+												<div class="col-6 col-12-small">
+													<input type="text" name="name" id="contact-name" placeholder="Name" />
+												</div>
+												<div class="col-6 col-12-small">
+													<input type="text" name="email" id="contact-email" placeholder="Email" />
+												</div>
+												<div class="col-12">
+													<textarea name="message" id="contact-message" placeholder="Message" rows="4"></textarea>
+												</div>
+												<div class="col-12">
+													<ul class="actions">
+														<li><input type="submit" class="style1" value="Send" /></li>
+														<li><input type="reset" class="style2" value="Reset" /></li>
+													</ul>
+												</div>
+											</div>
+										</form>
+									</section>
+
+							</div>
+							<div class="col-6 col-12-medium">
+
+								<!-- Contact -->
+									<section class="feature-list small">
+										<div class="row">
+											<div class="col-6 col-12-small">
+												<section>
+													<h3 class="icon solid fa-home">Mailing Address</h3>
+													<p>
+														군산시 대학로 558<br />
+														디지털 정보관 1층<br />
+														VISION LAB<br />
+													</p>
+												</section>
+											</div>
+											<div class="col-6 col-12-small">
+												<section>
+													<h3 class="icon solid fa-comment">Social</h3>
+													<p>
+														<a href="https://github.com/yoloyuloglow">Github</a><br />
+														<a href="https://acidic-grouse-852.notion.site/2-2-DB-dea6c50fc5d84b39bff20e50687491be?pvs=4">Notion</a><br />
+													</p>
+												</section>
+											</div>
+											<div class="col-6 col-12-small">
+												<section>
+													<h3 class="icon solid fa-envelope">Email</h3>
+													<p>
+														<a href="#">jeonghui8545@gmail.com</a>
+													</p>
+												</section>
+											</div>
+											<div class="col-6 col-12-small">
+												<section>
+													<h3 class="icon solid fa-phone">Phone</h3>
+													<p>
+														안알려줌
+														(000) 555-0000
+													</p>
+												</section>
+											</div>
+										</div>
+									</section>
+
+							</div>
+						</div>
+						<div id="copyright">
+							<ul>
+								<li>&copy; Untitled.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+		</div>
+		{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}")
+        </script>
+    {% endif %}
+{% endwith %}
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
